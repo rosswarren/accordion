@@ -1,0 +1,19 @@
+{
+    "name": "bskyb-accordion",
+    "version": "0.0.0",
+    "homepage": "https://github.com/rosswarren/accordion",
+    "authors": [
+        "Ross Warren <{{ git.email }}>"
+    ],
+    "description": "accordion",
+    "main": "dist",
+    "license": "BSD3",
+    "ignore": [
+        "**/*",
+        "!dist/**/*",
+        "!src/**/*"
+    ],
+    "devDependencies": {
+        "bskyb-core": "~0.0.4"
+    }
+}
