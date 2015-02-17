@@ -19,18 +19,10 @@ or alternatively, **Via Bower**
  * Include Sass: `@import 'bower_components/bskyb-accordion/src/styles/accordion';`
  * Include JS: `var accordion = require('../../bower_components/bskyb-accordion/src/scripts/accordion');`
 
-
-#### Dependencies
-
-This component relies on other components and you must also include these in your project.
-
- * [Dependency Name](https://github.com/skyglobal/DependencyName)
-
 #### Developer Notes
 
 Choose a type of accordion component and copy the relevant html.
- * [example](demo/_includes/example.html)
- * [example](demo/_includes/example.html),
+ * [Accordion example](demo/_includes/accordion.html)
 
 ## Contribution
 
@@ -40,7 +32,9 @@ To see how to build this component locally, read the [contribution guidelines](C
 
 ## Browser Support
 
- * IE8 +
+To support IE8, please include [polyfill](https://github.com/skyglobal/polyfill)
+
+ * IE9 +
  * Safari 5 +
  * Latest Firefox
  * Latest Chrome

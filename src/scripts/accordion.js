@@ -1,4 +1,6 @@
 var version  = require('./utils/version.js');
+var $ = require('../../bower_components/jquery/dist/jquery.js');
+var toggle = require('./toggle');
 
 // By default JS dependency is handled using browserify
 // please see 'GULP-TASKS.md#js' for more info
@@ -10,16 +12,39 @@ var version  = require('./utils/version.js');
 // var event = core.event;
 
 //example function and export
-function sum(args){
-    var total = 0;
-    args.forEach(function(int){
-        total += int;
-    });
-    return total;
+/*global jQuery:false */
+
+
+function Accordion($element){
+    this.$container = $element;
+    this.$headings = $element.find('.accordion-heading');
+    this.bindEvents();
 }
 
+function rotateIcon($elClicked) {
+    $elClicked.find('i').toggleClass('accordion--rotate');
+}
+
+Accordion.prototype = {
+    bindEvents:function(){
+        this.$headings.on("click",this.toggleContent.bind(this));
+    },
+    toggleContent:function(e){
+        e.preventDefault();
+        var $heading = $(e.currentTarget);
+        toggle({$elClicked:$heading});
+        rotateIcon($heading);
+    }
+};
+
+$.fn.accordion = function() {
+    return this.each(function() {
+        var accordion = new Accordion($(this));
+    });
+};
+
+
 module.exports = {
-    sum: sum,
     version: version
 };
 

@@ -7,6 +7,7 @@ module.exports = function(config) {
         preprocessors: {
             'src/**/*.js': ['commonjs', 'coverage'],
             'bower_components/bskyb-*/src/**/*.js': ['commonjs'],
+            'bower_components/jquery/dist/jquery.js': ['commonjs'],
             'test/**/*.js': ['commonjs'],
             '_site/*.html': ['html2js']
         },
@@ -30,6 +31,7 @@ module.exports = function(config) {
         files: [
             {pattern: '_site/*.html', watched: false },
             {pattern: 'bower_components/bskyb-*/src/**/*.js', included: true },
+            {pattern: 'bower_components/jquery/dist/jquery.js', included: true },
             {pattern: '_site/**/*.*', included: false, served: true},
             'src/**/*.js',
             'test/**/*.spec.js'
