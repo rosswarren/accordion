@@ -1,6 +1,6 @@
 {
   "name": "bskyb-accordion",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "homepage": "https://github.com/rosswarren/accordion",
   "authors": [
     "Ross Warren <{{ git.email }}>"

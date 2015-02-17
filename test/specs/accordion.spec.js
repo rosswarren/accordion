@@ -61,10 +61,10 @@ describe(describeSpec, function () {
 
     it('open when clicked', function(done){
         expect($first.hasClass('toggle-hidden')).toBe(true);
-        expect($first.parent().find('> a i').hasClass('rotate-180')).toBe(false);
+        expect($first.parent().find('> a i').hasClass('accordion--rotate')).toBe(false);
         $firstLink.click();
         expect($first.hasClass('toggle-hidden')).toBe(false);
-        expect($first.parent().find('> a i').hasClass('rotate-180')).toBe(true);
+        expect($first.parent().find('> a i').hasClass('accordion--rotate')).toBe(true);
         expect($last.hasClass('toggle-hidden')).toBe(true);
         setTimeout(function() {
             //                screenshot('accordion', 'open', $first.closest('.sub-section'));
@@ -85,7 +85,7 @@ describe(describeSpec, function () {
         expect($first.hasClass('toggle-hidden')).toBe(false);
         $firstLink.click();
         expect($first.hasClass('toggle-hidden')).toBe(true);
-        expect($first.parent().find('> a i').hasClass('rotate-180')).toBe(false);
+        expect($first.parent().find('> a i').hasClass('accordion--rotate')).toBe(false);
     });
 
     it('be left open when clicking a different accordion item', function () {
@@ -93,11 +93,11 @@ describe(describeSpec, function () {
         $lastLink.click();
         expect($first.hasClass('toggle-hidden')).toBe(false);
         expect($last.hasClass('toggle-hidden')).toBe(false);
-        expect($last.parent().find('> a i').hasClass('rotate-180')).toBe(true);
+        expect($last.parent().find('> a i').hasClass('accordion--rotate')).toBe(true);
         $lastLink.click();
         expect($first.hasClass('toggle-hidden')).toBe(false);
         expect($last.hasClass('toggle-hidden')).toBe(true);
-        expect($last.parent().find('> a i').hasClass('rotate-180')).toBe(false);
+        expect($last.parent().find('> a i').hasClass('accordion--rotate')).toBe(false);
     });
 
     it('allow images inside of the content area and display these without cropping', function(done){
