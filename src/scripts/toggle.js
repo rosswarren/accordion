@@ -11,7 +11,6 @@ action:      The state to toggle to - 'show' or 'hide'. Use this if $elClicked a
 */
 
 var core = require('../../bower_components/bskyb-core/src/scripts/core');
-var $ = require('../../bower_components/jquery/dist/jquery.js');
 require('../../bower_components/bskyb-polyfill/src/scripts/polyfill.js');
 var detect = core.detect;
 var event = core.event;
@@ -22,129 +21,168 @@ elementsToToggle = {},
 hiddenClass = 'toggle-hidden',
 supportTransition = detect.css('transition');
 
-function animate($el, to) {
+var elementIdentifierCount = 0;
+
+function animate(el, to) {
     if (supportTransition) {
-        $el.css({'height':to, overflow:'hidden', 'transition': 'height 0.5s ease-in-out'});
+        //$el.css({'height':to, overflow:'hidden', 'transition': 'height 0.5s ease-in-out'});
+
+        el.style.transition = 'height 0.5s ease-in-out';
+        el.style.height = to + "px";
+        el.style.overflow = 'hidden';
     }
-    $el.toggleClass(hiddenClass, (to === 0));
-    return $el;
+    //$el.toggleClass(hiddenClass, (to === 0));
+
+    if (to === 0) {
+        el.classList.add('toggle-hidden');
+    } else {
+        el.classList.remove('toggle-hidden');
+    }
+
+
+    return el;
 }
 
-function setOpenHeight($el){
-    var hasHeight = false;
-    if(!supportTransition) return;
-    if ($el.attr('style')){
-        var styles = ($el.attr('style').split(';'));
-        for (var i in styles){
-            if (styles[i].trim().indexOf('height')===0){
-                hasHeight = true;
-            }
-        }
-        if (hasHeight){ return; }
-    }
-    $el.css({'height':getOpenHeight($el)});
-}
-
-function getOpenHeight($el) {
-    if ($el.data('openHeight') !== undefined && !hasResized && !hasContentChanged) {
-        return $el.data('openHeight');
+function getOpenHeight(el) {
+    if (el.dataset.openHeight !== undefined && !hasResized && !hasContentChanged) {
+        return el.dataset.openHeight;
     }
 
-    $el.parent()
-    .append($('<div id="toggle-tmp-height"></div>')
-    .append($el.clone().attr('style', '').removeClass(hiddenClass + ' transition ')));
-    $('#toggle-tmp-height > div').append('<div class="toggle-clearfix-div clearfix clear" style="padding:1px"></div> ');
-    $('#toggle-tmp-height > div').prepend('<div class="toggle-clearfix-div clearfix clear" style="padding:1px"></div> ');
+    var divElement = document.createElement('div');
+    divElement.id = 'toggle-tmp-height';
 
-    var openHeight  = $('#toggle-tmp-height > div').height() - 2;
+    var clonedEl = el.cloneNode(true);
+    clonedEl.removeAttribute('style');
+    clonedEl.classList.remove(hiddenClass);
+    clonedEl.classList.remove('transition');
 
-    if($el.find('img').length > 0){
-        var originalHeightWithImages = $el.find('.accordion-content').outerHeight() - 2;
+    clonedEl.appendChild(createClearfixElement());
+    clonedEl.insertBefore(createClearfixElement(), clonedEl.firstChild);
+
+    divElement.appendChild(clonedEl);
+
+    el.parentNode.appendChild(divElement);
+
+    var openHeight  = document.querySelector('#toggle-tmp-height > div').offsetHeight - 2;
+
+
+    if (el.querySelector('img') !== undefined) {
+        var originalHeightWithImages = el.querySelector('.accordion-content').offsetHeight - 2;
+
         if(openHeight < originalHeightWithImages){
             openHeight = originalHeightWithImages;
         }
     }
 
-    $el.data('openHeight', openHeight);
+    el.dataset.openHeight = openHeight;
 
-    $('#toggle-tmp-height').remove();
-    $('.toggle-clearfix-div').remove();
+    remove(document.querySelector('#toggle-tmp-height'));
+    remove(document.querySelector('.toggle-clearfix-div'));
 
     return openHeight;
 }
 
-function containsSafeHtmlTags(text){
-    var allTags = /<\w+>.+?<\/\w+>|<.+\/?>/;
-    var $text = $(text);
-    if(($text.html().match(allTags) || []).length === $text.find('strong','b','i','em').length) {
-        return true;
-    } else {
-        return false;
-    }
+function remove(element) {
+    if (element === undefined || element === null) return;
+
+    element.parentNode.removeChild(element);
 }
 
-function updateText($elClicked) {
-    if (!$elClicked.attr('data-toggle-text')) {
+function containsSafeHtmlTags(text){
+    // var allTags = /<\w+>.+?<\/\w+>|<.+\/?>/;
+    //
+    //
+    //
+    // if((text.match(allTags) || []).length === text.indexOf('strong','b','i','em').length) {
+    //     return true;
+    // } else {
+    //     return false;
+    // }
+
+    return true;
+}
+
+function updateText(elClicked) {
+    if (elClicked.dataset.toggleText === undefined) {
         return;
     }
 
-    var $spans =  $elClicked.find('span');
-    var $textElement = $spans.length > 0 ? $spans.first() : $elClicked;
+    var spans = elClicked.querySelector('span');
 
-    var oldText = containsSafeHtmlTags($textElement) ? $textElement.html() : $textElement.text();
+    var textElement = spans.length > 0 ? spans[0] : elClicked;
 
-    if(containsSafeHtmlTags($textElement) === true){
-        $textElement.html($elClicked.attr('data-toggle-text'));
+    var oldText = containsSafeHtmlTags(textElement) ? textElement.innerHTML : textElement.innerText;
+
+    textElement.html(oldText);
+
+    if(containsSafeHtmlTags(textElement)){
+        textElement.innerHTML = elClicked.dataset.toggleText;
     } else {
-        $textElement.text($elClicked.attr('data-toggle-text'));
+        textElement.innerText = elClicked.dataset.toggleText;
     }
 
-    $textElement.html($elClicked.attr('data-toggle-text'));
-    $elClicked
-    .attr('data-toggle-text', oldText)
-    .attr('data-tracking-label', oldText);
+    elClicked.dataset.toggleText = oldText;
+    elClicked.dataset.trackingLabel = oldText;
 }
 
-function show($elToToggle) {
-    var openHeight = getOpenHeight($elToToggle);
-    animate($elToToggle, openHeight);
+function show(elToToggle) {
+    var openHeight = getOpenHeight(elToToggle);
+    animate(elToToggle, openHeight);
 }
 
-function hide($elToToggle) {
-    setOpenHeight($elToToggle);
-    animate($elToToggle, 0);
+function hide(elToToggle) {
+//    setOpenHeight(elToToggle);
+    animate(elToToggle, 0);
 }
 
-function updateToggledElements(state, $elementToToggle) {
+function updateToggledElements(state, elementToToggle, identifier) {
     if (state == 'shown') {
-        elementsToToggle[$elementToToggle.selector] = {state:state, $elementToToggle:$elementToToggle};
+        elementsToToggle[identifier] = {state:state, elementToToggle:elementToToggle};
     } else {
-        delete elementsToToggle[$elementToToggle.selector];
+        delete elementsToToggle[identifier];
     }
 }
 
 function toggle(options) {
-    var $elClicked = options.$elClicked,
-    $elementToToggle = options.$container || $($elClicked.attr('data-toggle')),
+    var elClicked = options.elClicked,
+    elementToToggle = options.container || document.querySelector(elClicked.dataset.toggle),
     action = options.action,
-    state = $elClicked && $elClicked.attr('data-toggle-state');
+    state = elClicked && elClicked.dataset.toggleState;
     hasContentChanged = (options.contentChanged !== undefined) ? options.contentChanged : false;
     if (state === 'shown' || action == 'hide') {
-        hide($elementToToggle);
+        hide(elementToToggle);
         state = 'hidden';
     } else {
-        show($elementToToggle);
+        show(elementToToggle);
         state = 'shown';
     }
-    updateToggledElements(state, $elementToToggle);
-    if (!$elClicked) {
-        $elClicked = $('[data-toggle="#' + $elementToToggle.attr('id') + '"]');
-    }
-    if ($elClicked && state !== $elClicked.attr('data-toggle-state')) {
-        updateText($elClicked, state);
-        $elClicked.attr('data-toggle-state', state);
+
+
+    var identifier = elementToToggle.dataset.identifier;
+
+    if (identifier === undefined) {
+        identifier = "elementIdentifier_" + elementIdentifierCount;
     }
 
+    updateToggledElements(state, elementToToggle, identifier);
+    if (!elClicked) {
+        elClicked = document.querySelector('[data-toggle="#' + elementToToggle.id + '"]');
+    }
+    if (elClicked && state !== elClicked.dataset.toggleState) {
+        updateText(elClicked, state);
+        elClicked.dataset.toggleState = state;
+    }
+}
+
+function createClearfixElement() {
+    var divElement = document.createElement('div');
+    divElement.classList.add('toggle-clearfix-div');
+    divElement.classList.add('clearfix');
+    divElement.classList.add('clear');
+
+    divElement.style.padding = '1px';
+
+    return divElement;
 }
 
 event.on(window,'resizeend', function () {
@@ -153,8 +191,8 @@ event.on(window,'resizeend', function () {
     for (i in elementsToToggle) {
         item = elementsToToggle[i];
         if (item.state === 'shown') {
-            var openHeight = getOpenHeight(item.$elementToToggle);
-            animate(item.$elementToToggle, openHeight);
+            var openHeight = getOpenHeight(item.elementToToggle);
+            animate(item.elementToToggle, openHeight);
         }
     }
     hasResized = false;
