@@ -11,7 +11,7 @@ function Accordion(element) {
 }
 
 function rotateIcon(elClicked) {
-    elClicked.querySelectorAll('i')[0].classList.toggle('accordion--rotate');
+    elClicked.querySelectorAll('i')[0].classList.toggle('accordion-rotate');
 }
 
 Accordion.prototype = {

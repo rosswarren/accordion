@@ -235,20 +235,6 @@ body .hover-colour:hover .skycon-warning, body .colour.skycon-warning, body .sky
 body .hover-colour:hover .skycon-whatsapp, body .colour.skycon-whatsapp, body .skycon--hover:hover .skycon--whatsapp, body .skycon--whatsapp.skycon--active {
   color: #34AF23; }
 
-#toggle-tmp-height {
-  height: 0;
-  overflow: hidden; }
-  #toggle-tmp-height > * {
-    visibility: hidden; }
-
-.toggle-hidden {
-  height: 0;
-  overflow: hidden; }
-
-.transition {
-  -webkit-transition: height 0.5s ease-in-out;
-          transition: height 0.5s ease-in-out; }
-
 .accordion {
   margin-top: 24px;
   list-style: none; }
@@ -267,7 +253,13 @@ body .hover-colour:hover .skycon-whatsapp, body .colour.skycon-whatsapp, body .s
   .accordion .view-container {
     border-left: 1px solid #f4f4f4;
     border-bottom: 1px solid #f4f4f4;
-    border-right: 1px solid #f4f4f4; }
+    border-right: 1px solid #f4f4f4;
+    -webkit-transition: height 0.5s ease-in-out;
+            transition: height 0.5s ease-in-out;
+    overflow: hidden; }
+  .accordion .toggle-hidden {
+    height: 0 !important;
+    overflow: hidden; }
   .accordion .skycon-chevron-down {
     -webkit-transition: all 0.5s ease-in-out;
             transition: all 0.5s ease-in-out;
